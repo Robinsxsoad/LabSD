@@ -130,8 +130,10 @@ public class ChordProtocol implements EDProtocol {
 				if (this.chordId == ((ChordProtocol) node.getProtocol(p.pid)).chordId)
 					return;
 				BigInteger remoteID = ((ChordProtocol) node.getProtocol(p.pid)).chordId;
-				if (idInab(remoteID, chordId, ((ChordProtocol) successorList[0]
-						.getProtocol(p.pid)).chordId))
+				// if (idInab(remoteID, chordId, ((ChordProtocol) successorList[0]
+						// .getProtocol(p.pid)).chordId))
+				if (idInab(chordId,remoteID, ((ChordProtocol) successorList[0]
+							.getProtocol(p.pid)).chordId)) // Línea cambiada para ver si se arregla chord
 					successorList[0] = node;
 				((ChordProtocol) successorList[0].getProtocol(p.pid))
 						.notify(myNode);
