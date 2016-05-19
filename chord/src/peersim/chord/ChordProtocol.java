@@ -134,15 +134,16 @@ public class ChordProtocol implements EDProtocol {
 	public void stabilize(Node myNode) {
 		try {
 			Node node = ((ChordProtocol) successorList[0].getProtocol(p.pid)).predecessor;
-			if (node != null) {
-				if (this.chordId == ((ChordProtocol) node.getProtocol(p.pid)).chordId)
-					return;
-				BigInteger remoteID = ((ChordProtocol) node.getProtocol(p.pid)).chordId;
-				if (idInab(chordId, remoteID, ((ChordProtocol) successorList[0]
-						.getProtocol(p.pid)).chordId))
-					successorList[0] = node;
+			if (node != null) {//si hay un nodo entremedio
+				if (this.chordId == ((ChordProtocol) node.getProtocol(p.pid)).chordId) //si ese nodo es el actual
+					return; //retorno
+				BigInteger remoteID = ((ChordProtocol) node.getProtocol(p.pid)).chordId; // el predecesor de mi sucesor
+				if (idInab(remoteID, this.chordId, ((ChordProtocol) successorList[0]
+						.getProtocol(p.pid)).chordId)) // si el predesor es mayor al actual y menor a mi sucesor 
+					successorList[0] = node; // el antecesor de mi sucesor es mi nuevo sucesor
+				//edn if
 				((ChordProtocol) successorList[0].getProtocol(p.pid))
-						.notify(myNode);
+						.notify(myNode); 
 			}
 			updateSuccessorList();
 		} catch (Exception e1) {
