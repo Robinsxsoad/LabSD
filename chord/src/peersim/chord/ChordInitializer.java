@@ -58,8 +58,9 @@ public class ChordInitializer implements NodeInitializer {
 				cp.successorList[0] = ((ChordProtocol) cp.successorList[0]
 						.getProtocol(pid)).find_successor(cp.chordId);
 			}
-			// controllo di non essere l'ultimo elemento della rete
-			if (cp.chordId.compareTo(lastId) > 0) {
+			//Controlar que no sea el último elemento de la red
+			//se agrega comparacion equals para saber si soy el último
+			if (cp.chordId.equals(lastId)) {
 				cp.successorList[0] = Network.get(0);
 				break;
 			}

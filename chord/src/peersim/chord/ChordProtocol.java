@@ -92,9 +92,9 @@ public class ChordProtocol implements EDProtocol {
 						dest = find_successor(target);
 					} while (dest.isUp() == false);
 				}
-				if (dest.getID() == successorList[0].getID()
+				if ((dest.getID() == successorList[0].getID() // Cuando es el último, no funciona
 						&& (target.compareTo(((ChordProtocol) dest
-								.getProtocol(p.pid)).chordId) < 0)) {
+								.getProtocol(p.pid)).chordId) < 0))) {
 					fails++;
 				} else {
 					t.send(message.getSender(), dest, message, pid);
@@ -130,10 +130,8 @@ public class ChordProtocol implements EDProtocol {
 				if (this.chordId == ((ChordProtocol) node.getProtocol(p.pid)).chordId)
 					return;
 				BigInteger remoteID = ((ChordProtocol) node.getProtocol(p.pid)).chordId;
-				// if (idInab(remoteID, chordId, ((ChordProtocol) successorList[0]
-						// .getProtocol(p.pid)).chordId))
-				if (idInab(chordId,remoteID, ((ChordProtocol) successorList[0]
-							.getProtocol(p.pid)).chordId)) // Línea cambiada para ver si se arregla chord
+				if (idInab(chordId, remoteID, ((ChordProtocol) successorList[0]
+						.getProtocol(p.pid)).chordId))
 					successorList[0] = node;
 				((ChordProtocol) successorList[0].getProtocol(p.pid))
 						.notify(myNode);
