@@ -71,31 +71,39 @@ public class ChordProtocol implements EDProtocol {
 		p.pid = pid;
 		currentNode = node.getIndex();
 		if (event.getClass() == LookUpMessage.class) {
-			LookUpMessage message = (LookUpMessage) event;
-			message.increaseHopCounter();
-			BigInteger target = message.getTarget();
-			Transport t = (Transport) node.getProtocol(p.tid);
-			Node n = message.getSender();
-			if (target == ((ChordProtocol) node.getProtocol(pid)).chordId) {
-				// mandare mess di tipo final
+			LookUpMessage message = (LookUpMessage) event; //mensaje a enviar
+			message.increaseHopCounter(); //incremento los saltos
+			BigInteger target = message.getTarget(); //obtengo el objetivo
+			Transport t = (Transport) node.getProtocol(p.tid); // protocolo
+			Node n = message.getSender(); //obtengo quien envia el mensaje
+			if (target == ((ChordProtocol) node.getProtocol(pid)).chordId) { // si el nodo actual es el target
+				// mandare mess di tipo final // soy el último
 				t.send(node, n, new FinalMessage(message.getHopCounter()), pid);
 			}
-			if (target != ((ChordProtocol) node.getProtocol(pid)).chordId) {
-				// funzione lookup sulla fingertabable
-				Node dest = find_successor(target);
-				if (dest.isUp() == false) {
+			if (target != ((ChordProtocol) node.getProtocol(pid)).chordId) { // si no soy el target
+				// funzione lookup sulla fingertabable //operaciones de busqueda en la fingertable
+				Node dest = find_successor(target); //dest es el sucesor de target
+				if (dest.isUp() == false) { // si el dest no esta caido
 					do {
-						varSuccList = 0;
-						stabilize(node);
+						varSuccList = 0; 
+						stabilize(node); //estabiliza el nodo actual
 						stabilizations++;
-						fixFingers();
-						dest = find_successor(target);
+						fixFingers(); //arregla la tabla
+						dest = find_successor(target); //actualiza el dest
 					} while (dest.isUp() == false);
 				}
-				if ((dest.getID() == successorList[0].getID() // Cuando es el último, no funciona
+				if (dest.getID() == successorList[0].getID() // el mas cercano a target es mi sucesor mas cercano
 						&& (target.compareTo(((ChordProtocol) dest
-								.getProtocol(p.pid)).chordId) < 0))) {
-					fails++;
+								.getProtocol(p.pid)).chordId) < 0)){//dest esta cerca del final
+				//	if(dest.getID()<(Network.size() - 1)
+				//	 && (target.compareTo(((ChordProtocol) Network.get(0)
+				//	.getProtocol(pid)).chordId)>0)){
+						//si el destino es menor al maximo de la red
+						// y el target esta despues del inicio del anillo (posicion 0) envia el mensaje
+					//	t.send(message.getSender(), dest, message, pid); //falla igual
+				//	}else{	
+						fails++;
+				//	}
 				} else {
 					t.send(message.getSender(), dest, message, pid);
 				}
