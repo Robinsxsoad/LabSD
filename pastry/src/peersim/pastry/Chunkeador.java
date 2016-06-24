@@ -1,29 +1,29 @@
 import java.io.*;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Chunkeador{
 
-	// Función que corta el archivo
-	public static void cortarCancion(File f) throws IOException {
-        int numeroParte = 1;
-        int tamParticion = 128000;// 128KB // Tamaño de las particiones
-        byte[] buffer = new byte[tamParticion];
+    // Función que corta el archivo
+    // public static void cortarCancion(File f) throws IOException {
+ //        int numeroParte = 1;
+ //        int tamParticion = 128000;// 128KB // Tamaño de las particiones
+ //        byte[] buffer = new byte[tamParticion];
 
-        try (BufferedInputStream bis = new BufferedInputStream(
-                new FileInputStream(f))) {//try-with-resources to ensure closing stream
-            String nombre = f.getName();
+ //        try (BufferedInputStream bis = new BufferedInputStream(
+ //                new FileInputStream(f))) {//try-with-resources to ensure closing stream
+ //            String nombre = f.getName();
 
-            int temp = 0;
-            while ((temp = bis.read(buffer)) > 0) {
-                File parte = new File(f.getParent(), nombre + "."
-                        + String.format("%01d", numeroParte++));
-                try (FileOutputStream out = new FileOutputStream(parte)) {
-                    out.write(buffer, 0, temp);
-                }
-            }
-        }
-    }
+ //            int temp = 0;
+ //            while ((temp = bis.read(buffer)) > 0) {
+ //                File parte = new File(f.getParent(), nombre + "."
+ //                        + String.format("%01d", numeroParte++));
+ //                try (FileOutputStream out = new FileOutputStream(parte)) {
+ //                    out.write(buffer, 0, temp);
+ //                }
+ //            }
+ //        }
+ //    }
     
     // Función que une la canción
 // public static void mergeFiles(List<File> files, File into)
@@ -36,7 +36,7 @@ public class Chunkeador{
 //     }
 // }
 
-	// Función para buscar las partes de la canción
+    // Función para buscar las partes de la canción
 // public static List<File> listOfFilesToMerge(File oneOfFiles) {
 //     String tmpName = oneOfFiles.getName();//{name}.{number}
 //     File dir;
@@ -71,10 +71,11 @@ public class Chunkeador{
                 // a 'real' binary file.
                 // System.out.println(new String(buffer));
                 // partes = Arrays.toString(buffer);
-                partes = buffer.toString();
+                // partes = buffer.toString();
+                partes = new String(buffer);
                 partesCancion.add(partes);
                 i=i+1;
-                System.out.println("Esta es la partición: "+i+"\n");
+                System.out.println("Esta es la partición: "+i);
                 total += nRead;
             }   
 
@@ -99,9 +100,13 @@ public class Chunkeador{
         }
 
         public static void main(String [] args) {
-
-        // The name of the file to open.
-        
+            List<String> partes = cortarCancion("song.mp3");
+            
+            Iterator<String> it = partes.iterator();
+            while (it.hasNext()) {
+            System.out.println(it.next());
+            }
         }
+    
 
 } // End of class
