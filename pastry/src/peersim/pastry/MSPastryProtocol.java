@@ -722,7 +722,8 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             break;
         //AGREGADO POR EL LUCHO
         case Message.MSG_QUERY:
-            route(m,myNode);
+            System.out.println(this.nodeId);
+            System.out.println("llego el trozo al DHT debería guardarlo :c");
             break;
         }
 

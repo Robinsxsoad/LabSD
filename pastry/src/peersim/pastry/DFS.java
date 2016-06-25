@@ -32,8 +32,17 @@ public class DFS implements Cloneable, EDProtocol {
 	}
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event;
-		System.out.println("DFS "+m.body);
-
+		ArrayList<String> bloques = new ArrayList<String>();
+		bloques=Chunkeador.cortarCancion((String)m.body);
+		for(int i=0;i<bloques.size();i++) {
+ 			Message q = Message.makeQuery(bloques.get(i));
+			try{
+				q.dest = HashSHA.applyHash(bloques.get(i));
+			}catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+				this.sendtoDHT(q); //RUTEO A DHT
+		}
 	}
 	public void sendtoDHT(Message m){
 		routeLayer.sendDHTLookup(m.dest, m);
@@ -47,8 +56,6 @@ public class DFS implements Cloneable, EDProtocol {
 		}catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		System.out.println(m.dest);
-		System.out.println(m.body);		
 		this.sendtoDHT(m); //RUTEO A DHT
 	}
 
