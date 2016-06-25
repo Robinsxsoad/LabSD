@@ -48,9 +48,9 @@ public class Chunkeador{
 //     return Arrays.asList(files);
 // }
     
-        public static List<String> cortarCancion(String nombre){
+        public static ArrayList<String> cortarCancion(String nombre){
             String fileName = nombre;
-            List<String> partesCancion = new ArrayList<String>();
+            ArrayList<String> partesCancion = new ArrayList<String>();
         try {
             // Use this for reading the data.
             byte[] buffer = new byte[128000];
@@ -75,13 +75,13 @@ public class Chunkeador{
                 partes = new String(buffer);
                 partesCancion.add(partes);
                 i=i+1;
-                System.out.println("Esta es la partición: "+i);
+                // System.out.println("Esta es la partición: "+i);
                 total += nRead;
             }   
 
             // Always close files.
             inputStream.close();        
-            System.out.println("Read " + total + " bytes");
+            // System.out.println("Read " + total + " bytes");
             return partesCancion;
         }
         catch(FileNotFoundException ex) {
@@ -99,13 +99,21 @@ public class Chunkeador{
             return partesCancion;
         }
 
-        public static void main(String [] args) {
-            List<String> partes = cortarCancion("song.mp3");
+        // Asumo que la entrada llega ordenada
+        public static Object[] unirCancion(ArrayList<String> partes, int numPartes){
+            Object[] cancion;
+            cancion = partes.toArray();
             
-            Iterator<String> it = partes.iterator();
-            while (it.hasNext()) {
-            System.out.println(it.next());
-            }
+            
+            return cancion;
+        }
+
+        public static void main(String [] args) {
+            ArrayList<String> partes = cortarCancion("song.mp3");
+            
+            Object[] cancion;
+            cancion = unirCancion(partes, 103);
+            
         }
     
 
