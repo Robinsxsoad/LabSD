@@ -241,7 +241,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
             deliver(m);
-       //     o("\n[ Recibir ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
+            o("\n[ Recibir ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
             break;
         case Message.MSG_JOINREQUEST:
 
@@ -503,32 +503,30 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      */
     //USAR PARA ENVIAR A OTROS NODOS
     public void send(BigInteger recipient, Object data) {
-    	Message m = new Message(data);
+    	Message m = (Message)data;
     	m.dest = recipient;
     	m.src = this.nodeId;
     	m.timestamp = CommonState.getTime();
-
     	/*
     	 * starting by the current pastry node (this.NodeId), until destination
     	*/
       Node me = nodeIdtoNode(this.nodeId);
       EDSimulator.add(0, m, me, mspastryid);
     }
-    //FUNCION DE HIDALGO
+    //FUNCION PARA ENVIAR POR TRANSPORTE
     public void sendDirect(BigInteger d,  Object data) {
         
         Message m = Message.makeLookUp(data);
         m.dest = d;//((MSPastryProtocol)n.getProtocol(mspastryid)).nodeId;
         m.src = this.nodeId;
-   //     m.key = ((Query) data).key;
-     //   m.value = ((Query) data).value;
         m.timestamp = CommonState.getTime();
 
         transport = (UnreliableTransport) (Network.prototype).getProtocol(tid);
         transport.send(nodeIdtoNode(this.nodeId) ,nodeIdtoNode(d), m, mspastryid);
     }
     public void sendDHTLookup(BigInteger recipient, Object data) {
-        this.send(recipient, data);
+        Message m = (Message)data;
+        this.send(recipient, m);
 
     }
     //______________________________________________________________________________________________

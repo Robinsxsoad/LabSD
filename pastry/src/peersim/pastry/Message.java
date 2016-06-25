@@ -117,7 +117,6 @@ public class Message {
      * This Object contains the body of the message, no matter what it contains
      */
     public Object body = null;
-
     /**
      * ID of the message. this is automatically generated univocally, and should not change
      */

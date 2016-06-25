@@ -26,7 +26,7 @@ public class Consulta implements Control{
         mensaje = sc.nextLine();
     	Message m = Message.makeLookUp(mensaje);
     	m.timestamp = CommonState.getTime();
-
+        
     	if (CommonState.r.nextInt(100) < 100){
         	m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
         }
