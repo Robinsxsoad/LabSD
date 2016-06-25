@@ -54,14 +54,14 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
     /**
      * Listener assingned to the receiving of a message. If null it is not called
      */
-    private Listener listener;
+    private DFS listener;
 
     //______________________________________________________________________________________________
     /**
      * allows to change/clear the listener
      * @param l Listener
      */
-    public void setListener(Listener l) {
+    public void setListener(DFS l) {
     	listener = l;
     }
 
@@ -94,7 +94,13 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      */
     public LeafSet leafSet;
 
+    public void setMyApp(DFS l) {
+        listener = l;
+    }
 
+    public DFS getApp() {
+        return listener;
+    }
     //______________________________________________________________________________________________
     /**
      * Replicate this object by returning an identical copy.
@@ -131,7 +137,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         leafSet = new LeafSet(BigInteger.ZERO, MSPastryCommonConfig.L);
 
         tid = Configuration.getPid(prefix + "." + PAR_TRANSPORT);
-
+        this.mspastryid = Configuration.lookupPid(prefix.substring(prefix.lastIndexOf('.') + 1));
     }
 
     //______________________________________________________________________________________________
@@ -168,6 +174,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * update
      * @param m Message
      */
+    //MODIFICAR PARA ENVIO
     private void deliver(Message m) {
         //statistiche utili all'observer
         MSPastryObserver.hopStore.add(m.nrHops-1);
@@ -175,7 +182,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         MSPastryObserver.timeStore.add(timeInterval);
 
         if (listener != null) {
-            listener.receive(m);
+           listener.receive(m);
         }
 
     }
@@ -234,7 +241,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
             deliver(m);
-            o("\n[ Recibir ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
+       //     o("\n[ Recibir ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
             break;
         case Message.MSG_JOINREQUEST:
 
@@ -246,6 +253,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             transport = (UnreliableTransport) (Network.prototype).getProtocol(tid);
             transport.send(nodeIdtoNode(this.nodeId), nodeIdtoNode(m.dest), m, mspastryid);
             break;
+        //AGREGAR CASOS DE DFS
         case Message.MSG_QUERY:
             //Aca llega la query routeada
             o("\n[ Consultar ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
@@ -377,7 +385,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         else receiveRoute(m,srcNode);
 
 
-    }
+    }//REVISAR
 
 
     //______________________________________________________________________________________________
@@ -493,6 +501,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * @param recipient BigInteger
      * @param data Object
      */
+    //USAR PARA ENVIAR A OTROS NODOS
     public void send(BigInteger recipient, Object data) {
     	Message m = new Message(data);
     	m.dest = recipient;
@@ -505,7 +514,23 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
       Node me = nodeIdtoNode(this.nodeId);
       EDSimulator.add(0, m, me, mspastryid);
     }
+    //FUNCION DE HIDALGO
+    public void sendDirect(BigInteger d,  Object data) {
+        
+        Message m = Message.makeLookUp(data);
+        m.dest = d;//((MSPastryProtocol)n.getProtocol(mspastryid)).nodeId;
+        m.src = this.nodeId;
+   //     m.key = ((Query) data).key;
+     //   m.value = ((Query) data).value;
+        m.timestamp = CommonState.getTime();
 
+        transport = (UnreliableTransport) (Network.prototype).getProtocol(tid);
+        transport.send(nodeIdtoNode(this.nodeId) ,nodeIdtoNode(d), m, mspastryid);
+    }
+    public void sendDHTLookup(BigInteger recipient, Object data) {
+        this.send(recipient, data);
+
+    }
     //______________________________________________________________________________________________
     private static final boolean cond1(BigInteger k, BigInteger i, BigInteger j) {
         return k.subtract(j).abs().compareTo(k.subtract(i).abs()) < 0;
@@ -675,8 +700,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         this.mspastryid = myPid;
 
         Message m = (Message) event;
-
-
+;
 
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
@@ -698,6 +722,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         case Message.MSG_LSPROBEREQUEST:
             performLSProbeRequest(m);
             break;
+        //AGREGADO POR EL LUCHO
         case Message.MSG_QUERY:
             route(m,myNode);
             break;

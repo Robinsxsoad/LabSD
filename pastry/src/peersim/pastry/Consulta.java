@@ -20,7 +20,11 @@ public class Consulta implements Control{
     }
 
     private Message consultaMensaje(){
-    	Message m = Message.makeQuery("Mensaje 1");
+		Scanner sc = new Scanner(System.in);
+		String mensaje;
+		System.out.print("Introduzca el nombre de la canción: ");       
+        mensaje = sc.nextLine();
+    	Message m = Message.makeLookUp(mensaje);
     	m.timestamp = CommonState.getTime();
 
     	if (CommonState.r.nextInt(100) < 100){
@@ -30,8 +34,6 @@ public class Consulta implements Control{
         	m.dest = ((MSPastryProtocol) (Network.get(CommonState.r.nextInt(
                      Network.size())).getProtocol(pid))).nodeId;
         }
-
-        //System.out.println("[ Consultar ]\t[ Id = "+consulta.getID()+", Consulta = "+m.body+" ]");
         return m;
 
     }

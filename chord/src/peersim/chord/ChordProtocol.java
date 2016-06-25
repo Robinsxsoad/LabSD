@@ -34,6 +34,9 @@ public class ChordProtocol implements EDProtocol {
 
 	public int m;
 
+	//probando catalogo
+	public boolean catalogo;
+
 	public int succLSize;
 
 	public String prefix;
@@ -62,7 +65,7 @@ public class ChordProtocol implements EDProtocol {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *  paso mensajes entre nodos
 	 * @see peersim.edsim.EDProtocol#processEvent(peersim.core.Node, int,
 	 *      java.lang.Object)
 	 */

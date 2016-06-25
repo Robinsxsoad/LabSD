@@ -35,12 +35,12 @@ public class CreateNw implements Control {
 	public CreateNw(String prefix) {
 		pid = Configuration.getPid(prefix + "." + PAR_PROT);
 		idLength = Configuration.getInt(prefix + "." + PAR_IDLENGTH); 
-		successorLsize = Configuration.getInt(prefix + "." + PAR_SUCCSIZE); 
+		successorLsize = Configuration.getInt(prefix + "." + PAR_SUCCSIZE);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 * observa o modifican la simulacion
 	 * @see peersim.core.Control#execute()
 	 */
 
@@ -48,6 +48,9 @@ public class CreateNw implements Control {
 		for (int i = 0; i < Network.size(); i++) {
 			Node node = (Node) Network.get(i);
 			ChordProtocol cp = (ChordProtocol) node.getProtocol(pid);
+			if(i==0){//nodo catalogo
+				cp.catalogo=true;
+			}
 			cp.m = idLength;
 			cp.succLSize = successorLsize;
 			cp.varSuccList = 0;

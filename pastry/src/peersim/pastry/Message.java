@@ -247,10 +247,10 @@ public class Message {
 
 
    //______________________________________________________________________________________________
-   public String toString() {
-      String s = "[ID="+id+"][DEST=" + dest + "]";
-      return s + "[Type=" + messageTypetoString() + "] BODY=(...)";
-   }
+  // public String toString() {
+   //   String s = "[ID="+id+"][DEST=" + dest + "]";
+  //    return s + "[Type=" + messageTypetoString() + "] BODY=(...)";
+ //  }
    //______________________________________________________________________________________________
    public Message copy() {
        Message dolly = new Message();
