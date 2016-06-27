@@ -19,6 +19,7 @@ public class App {
     public static void main(String[] args) {
         VistaCliente vistaCliente; // Crea instancia de la vista de inicio del cliente
         vistaCliente = new VistaCliente();
+        vistaCliente.setLocationRelativeTo(null);
         vistaCliente.setVisible(true); // Hace visible la ventana creada
     }
     
