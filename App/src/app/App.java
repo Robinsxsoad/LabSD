@@ -5,6 +5,8 @@
  */
 package app;
 
+import vistas.VistaCliente;
+
 /**
  *
  * @author robin
@@ -15,7 +17,9 @@ public class App {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        VistaCliente vistaCliente; // Crea instancia de la vista de inicio del cliente
+        vistaCliente = new VistaCliente();
+        vistaCliente.setVisible(true); // Hace visible la ventana creada
     }
     
 }
