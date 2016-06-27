@@ -72,6 +72,8 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
     private int tid;
     private int mspastryid;
     private boolean cleaningScheduled = false;
+    //arraylist de partes de cancion
+    private ArrayList<String> parts = new ArrayList<String>();
 
     /**
      * allow to call the cleaning service initializer only once
@@ -241,7 +243,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
             deliver(m);
-            o("\n[ Recibir ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
+            o("\n[ Recibi la canción ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
             break;
         case Message.MSG_JOINREQUEST:
 
@@ -255,8 +257,9 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             break;
         //AGREGAR CASOS DE DFS
         case Message.MSG_QUERY:
-            //Aca llega la query routeada
-            o("\n[ Consultar ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
+
+            parts.add((String)m.body);
+            o("\n[ Llega Fragmento ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
             break;
 
         }
@@ -720,10 +723,9 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         case Message.MSG_LSPROBEREQUEST:
             performLSProbeRequest(m);
             break;
-        //AGREGADO POR EL LUCHO
+        //Bajo mensajes a capa DHT encargado y los ruteo
         case Message.MSG_QUERY:
-            System.out.println(this.nodeId);
-            System.out.println("llego el trozo al DHT debería guardarlo :c");
+            route(m, myNode);
             break;
         }
 

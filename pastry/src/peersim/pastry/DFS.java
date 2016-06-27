@@ -3,7 +3,6 @@ package peersim.pastry;
 
 
 import java.math.*;
-import java.io.UnsupportedEncodingException;
 import peersim.config.*;
 import peersim.core.*;
 import peersim.edsim.*;
@@ -21,12 +20,13 @@ public class DFS implements Cloneable, EDProtocol {
 	private String song;
 	private int pid;
 	private int tid;
+	//Array list de destinos de mi cancion
+	private ArrayList<BigInteger> dests = new ArrayList<BigInteger>();
 
 	public DFS(String prefix){
 		DFS.prefix = prefix;
 		this.pid = Configuration.lookupPid(prefix.substring(prefix.lastIndexOf('.') + 1));
 		this.tid = Configuration.getPid(prefix + "." + PAR_TRANSPORT);
-	//	this.song = Configuration.getSting(prefix + "." + PAR_SONG);
 		this.routeLayer = ((MSPastryProtocol) CommonState.getNode().getProtocol(tid));
 		this.routeLayer.setMyApp(this);
 	}
@@ -38,6 +38,7 @@ public class DFS implements Cloneable, EDProtocol {
  			Message q = Message.makeQuery(bloques.get(i));
 			try{
 				q.dest = HashSHA.applyHash(bloques.get(i));
+				dests.add(q.dest);
 			}catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}

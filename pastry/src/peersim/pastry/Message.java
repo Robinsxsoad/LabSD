@@ -105,6 +105,8 @@ public class Message {
 
     public static final int MSG_QUERY = 6; 
 
+    public static final int MSG_INSERT = 7; 
+
     /**
      * Identify the type of this message
      */
