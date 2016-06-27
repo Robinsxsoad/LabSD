@@ -90,3 +90,4 @@ dist/
 nbdist/
 nbactions.xml
 .nb-gradle/
+/App/nbproject/private/
