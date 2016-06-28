@@ -127,8 +127,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * create the new object. clone could not use this constructor, preferring a more quick
      * constructor
      *
-     * @param prefix String
-     */
+     * @param prefix String     */
     public MSPastryProtocol(String prefix) {
         this.nodeId = null;              // empty nodeId
         MSPastryProtocol.prefix = prefix;

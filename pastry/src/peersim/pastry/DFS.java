@@ -12,12 +12,24 @@ import java.util.*;
 
 
 public class DFS implements Cloneable, EDProtocol {
+
+    public static interface Listener {
+
+        public void receive(Message m);
+    }
+
+    private App listener;
+
+    public void setListener(App l) {
+    	listener = l;
+    }
+
+
+
 	private static final String PAR_TRANSPORT = "transport";
-	private static final String PAR_SONG = "song";
 
 	protected MSPastryProtocol routeLayer;
 	private static String prefix;
-	private String song;
 	private int pid;
 	private int tid;
 	//Array list de destinos de mi cancion
@@ -30,6 +42,9 @@ public class DFS implements Cloneable, EDProtocol {
 		this.routeLayer = ((MSPastryProtocol) CommonState.getNode().getProtocol(tid));
 		this.routeLayer.setMyApp(this);
 	}
+	public void setMyApp(App l) {
+        listener = l;
+    }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event;
 		ArrayList<String> bloques = new ArrayList<String>();
@@ -52,6 +67,7 @@ public class DFS implements Cloneable, EDProtocol {
 	public void processEvent(Node myNode, int pid, Object event){  // LLEGA DESDE CONSULTA.java
 		Message m = (Message) event;
 		String hash = m.body.toString();
+		System.out.println("en DFS"+((MSPastryProtocol) myNode.getProtocol(pid-1)).nodeId);
 		try{
 			m.dest = HashSHA.applyHash(hash);
 		}catch (UnsupportedEncodingException e) {
