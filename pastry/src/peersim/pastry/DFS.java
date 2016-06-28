@@ -56,25 +56,34 @@ public class DFS implements Cloneable, EDProtocol {
 		bloques=Chunkeador.cortarCancion((String)m.body);
 		// Bloque bloqueActual = new Bloque(); // temporal
 		for(int i=0;i<bloques.size();i++) {
-			Bloque bloqueActual = new Bloque(); // temporal
- 			Message q = Message.makeQuery(bloques.get(i));
+			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
+ 			// Message q = Message.makeQuery(bloques.get(i));
  			bloqueActual.setNombreCancion(m.body.toString());
  			bloqueActual.setSecuenciaBloque(i+1);
  			bloqueActual.setParticion(bloques.get(i));
- 			particiones.add(bloqueActual);
-			try{
-				q.dest = HashSHA.applyHash(bloques.get(i));
-				dests.add(q.dest);
-			}catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+ 			particiones.add(bloqueActual); // Agrego al listado el objeto particion actual
+			// try{
+			// 	q.dest = HashSHA.applyHash(bloques.get(i));
+			// 	dests.add(q.dest);
+			// }catch (UnsupportedEncodingException e) {
+			// 	e.printStackTrace();
+			// }
 			// System.out.println(bloqueActual.getNombreCancion());
 			// System.out.println(bloqueActual.getSecuenciaBloque());
 			// System.out.println(bloqueActual.getParticion());
-			this.sendtoDHT(q); //RUTEO A DHT
+			// this.sendtoDHT(q); //RUTEO A DHT
 		}// Fin de for para enviar las particiones
 
-		
+		for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion
+			Message q = Message.makeQuery(particiones.get(j)); // El mensaje a enviar es el objeto
+			try{
+				q.dest = HashSHA.applyHash(particiones.get(j).getParticion()); // Hash con los datos para saber quién los tendrá
+				dests.add(q.dest); // Agrego a los destinatarios del mensaje
+			}catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
+		}
 	}
 	public void sendtoDHT(Message m){
 		routeLayer.sendDHTLookup(m.dest, m);
