@@ -73,7 +73,7 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
 
         jLabel3.setText("Insertar una canción");
 
-        textInsertar.setEditable(false);
+        textInsertar.setEditable(true);
 
         buttonInsertar.setText("Insertar");
         buttonInsertar.addMouseListener(new java.awt.event.MouseAdapter() {
