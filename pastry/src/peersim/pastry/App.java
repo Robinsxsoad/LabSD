@@ -28,7 +28,7 @@ public class App implements Cloneable, EDProtocol {
 		this.dfsLayer.setMyApp(this);
 	}
 	public void receive(Object event){		//RECIBIMOS DEL DHT
-
+		System.out.println("POP UP DE CANCIÓN RECIBIDA");
 	}
 
 	@Override 	
