@@ -54,6 +54,11 @@ public class VistaCliente extends javax.swing.JFrame {
         });
 
         buttonBuscar.setText("Buscar");
+        buttonBuscar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonBuscarMouseClicked(evt);
+            }
+        });
 
         jLabel3.setText("Insertar una canción");
 
@@ -150,6 +155,10 @@ public class VistaCliente extends javax.swing.JFrame {
             textInsertar.setText(selectedFile.getAbsolutePath());
         }
     }//GEN-LAST:event_buttonInsertarMouseClicked
+
+    private void buttonBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBuscarMouseClicked
+        System.out.println("Tengo que buscar :c");
+    }//GEN-LAST:event_buttonBuscarMouseClicked
 
     /**
      * @param args the command line arguments
