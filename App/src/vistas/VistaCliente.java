@@ -60,6 +60,11 @@ public class VistaCliente extends javax.swing.JFrame {
         textInsertar.setEditable(false);
 
         buttonInsertar.setText("Insertar");
+        buttonInsertar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonInsertarMouseClicked(evt);
+            }
+        });
         buttonInsertar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonInsertarActionPerformed(evt);
@@ -141,6 +146,17 @@ public class VistaCliente extends javax.swing.JFrame {
             textInsertar.setText(selectedFile.getAbsolutePath());
         }
     }//GEN-LAST:event_buttonInsertarActionPerformed
+
+    private void buttonInsertarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonInsertarMouseClicked
+        // Desplegar selector de archivo
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            textInsertar.setText(selectedFile.getAbsolutePath());
+        }
+    }//GEN-LAST:event_buttonInsertarMouseClicked
 
     /**
      * @param args the command line arguments
