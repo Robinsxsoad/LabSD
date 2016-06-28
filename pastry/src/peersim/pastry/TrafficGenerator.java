@@ -68,7 +68,7 @@ public class TrafficGenerator implements Control {
 
             String random = list.get(randomizer.nextInt(list.size()));
 
-            Message m = Message.makeLookUp(random);
+            Message m = Message.makeNothing(random);
             m.timestamp = CommonState.getTime();
 
             if (CommonState.r.nextInt(100) < 100)
@@ -77,8 +77,8 @@ public class TrafficGenerator implements Control {
                 m.dest = ((MSPastryProtocol) (Network.get(CommonState.r.nextInt(
                         Network.size())).getProtocol(pid))).nodeId;
 
-            String s = String.format("\n[ Insertar ]\t[ Cuerpo Mensaje = %s | Id Mensaje = %d]",m.body,m.id);
-            System.err.println(s);
+          //  String s = String.format("\n[ Insertar ]\t[ Cuerpo Mensaje = %s | Id Mensaje = %d]",m.body,m.id);
+          //  System.err.println(s);
 
             return m;
 

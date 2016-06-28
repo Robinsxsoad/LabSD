@@ -58,20 +58,29 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
 
         jLabel2.setText("Ingrese nombre de la canción");
 
-        textBuscar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+        textBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textBuscarActionPerformed(evt);
             }
         });
-           
 
         buttonBuscar.setText("Buscar");
+        buttonBuscar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonBuscarMouseClicked(evt);
+            }
+        });
 
         jLabel3.setText("Insertar una canción");
 
         textInsertar.setEditable(false);
 
         buttonInsertar.setText("Insertar");
+        buttonInsertar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                buttonInsertarMouseClicked(evt);
+            }
+        });
         buttonInsertar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonInsertarActionPerformed(evt);
@@ -139,22 +148,15 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textBuscarActionPerformed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_textBuscarActionPerformed
-        Message m = Message.makeLookUp(textBuscar.getText());
-        m.timestamp = CommonState.getTime();
-        m.body=textBuscar.getText();
-        if (CommonState.r.nextInt(100) < 100){
-            m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
-        }
-        else{
-            m.dest = ((MSPastryProtocol) (Network.get(CommonState.r.nextInt(
-                     Network.size())).getProtocol(pid))).nodeId;
-        }
-        Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
-        EDSimulator.add(0, m, consulta, 5);
+    private void textBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textBuscarActionPerformed
+        // TODO add your handling code here:
     }//GEN-LAST:event_textBuscarActionPerformed
 
     private void buttonInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInsertarActionPerformed
+        
+    }//GEN-LAST:event_buttonInsertarActionPerformed
+
+    private void buttonInsertarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonInsertarMouseClicked
         // Desplegar selector de archivo
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
@@ -162,12 +164,26 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             textInsertar.setText(selectedFile.getAbsolutePath());
-        }
-    }//GEN-LAST:event_buttonInsertarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+            Message m = Message.makeLookUp(selectedFile.getAbsolutePath());
+            m.timestamp = CommonState.getTime();
+            m.body=selectedFile.getAbsolutePath();
+            if (CommonState.r.nextInt(100) < 100){
+                m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
+            }
+            else{
+                m.dest = ((MSPastryProtocol) (Network.get(CommonState.r.nextInt(
+                         Network.size())).getProtocol(pid))).nodeId;
+            }
+            Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
+            System.out.println(m.body);
+            EDSimulator.add(0, m, consulta, 5);
+        }
+    }//GEN-LAST:event_buttonInsertarMouseClicked
+
+    private void buttonBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBuscarMouseClicked
+    }//GEN-LAST:event_buttonBuscarMouseClicked
+
 
     public boolean execute(){
         new VistaCliente(prefix).setVisible(true);

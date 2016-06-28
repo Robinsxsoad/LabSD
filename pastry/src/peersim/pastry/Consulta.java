@@ -42,7 +42,6 @@ public class Consulta implements Control{
     public boolean execute(){
     	
     	consulta = Network.get(CommonState.r.nextInt(Network.size()));
-        System.out.println(pid);
     	EDSimulator.add(0, consultaMensaje(), consulta, pid);
     	return false;
     } 

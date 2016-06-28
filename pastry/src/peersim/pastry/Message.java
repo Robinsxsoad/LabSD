@@ -105,9 +105,9 @@ public class Message {
 
     public static final int MSG_QUERY = 6; 
 
-    public static final int MSG_INSERT = 7; 
+    public static final int MSG_NOTHING = 7; 
 
-    /**
+    /*
      * Identify the type of this message
      */
     public int messageType = MSG_LOOKUP;
@@ -213,7 +213,9 @@ public class Message {
     public static final Message makeQuery(Object body){
       return new Message(MSG_QUERY, body);
     }
-
+    public static final Message makeNothing(Object body){
+      return new Message(MSG_NOTHING, body);
+    }
     //______________________________________________________________________________________________
     /**
      * returns a ";" separated list of the tracks vector

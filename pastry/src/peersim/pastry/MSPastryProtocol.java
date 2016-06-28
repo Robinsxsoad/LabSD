@@ -726,6 +726,9 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         case Message.MSG_QUERY:
             route(m, myNode);
             break;
+        //Caso para que no se muera el EDSimulator
+        case Message.MSG_NOTHING:
+            break;
         }
 
 
