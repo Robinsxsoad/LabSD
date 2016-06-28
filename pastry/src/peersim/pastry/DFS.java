@@ -34,6 +34,9 @@ public class DFS implements Cloneable, EDProtocol {
 	private int tid;
 	//Array list de destinos de mi cancion
 	private ArrayList<BigInteger> dests = new ArrayList<BigInteger>();
+	// ArrayList para mantener las particiones con la info
+	private ArrayList<Bloque> particiones = new ArrayList<Bloque>();
+	private ArrayList<String> bloques = new ArrayList<String>();
 
 	public DFS(String prefix){
 		DFS.prefix = prefix;
@@ -47,31 +50,31 @@ public class DFS implements Cloneable, EDProtocol {
     }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event;
-		System.out.println("Soy DHT y nombre es "+m.body.toString());
-		ArrayList<String> bloques = new ArrayList<String>();
-		ArrayList<Bloque> particiones = new ArrayList<Bloque>();
+		// System.out.println("Soy DFS y nombre es "+m.body.toString());
+		// ArrayList<String> bloques = new ArrayList<String>();
+		// ArrayList<Bloque> particiones = new ArrayList<Bloque>();
 		bloques=Chunkeador.cortarCancion((String)m.body);
-		Bloque bloqueActual = new Bloque(); // temporal
+		// Bloque bloqueActual = new Bloque(); // temporal
 		for(int i=0;i<bloques.size();i++) {
+			Bloque bloqueActual = new Bloque(); // temporal
  			Message q = Message.makeQuery(bloques.get(i));
  			bloqueActual.setNombreCancion(m.body.toString());
  			bloqueActual.setSecuenciaBloque(i+1);
  			bloqueActual.setParticion(bloques.get(i));
  			particiones.add(bloqueActual);
- 			// particiones.get(i).setNombreCancion(m.body.toString());
- 			// particiones.get(i).setSecuenciaBloque(i);
- 			// particiones.get(i).setParticion(bloques.get(i));
 			try{
 				q.dest = HashSHA.applyHash(bloques.get(i));
 				dests.add(q.dest);
 			}catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			System.out.println(bloqueActual.getNombreCancion());
-			System.out.println(bloqueAc tual.getSecuenciaBloque());
+			// System.out.println(bloqueActual.getNombreCancion());
+			// System.out.println(bloqueActual.getSecuenciaBloque());
 			// System.out.println(bloqueActual.getParticion());
 			this.sendtoDHT(q); //RUTEO A DHT
 		}// Fin de for para enviar las particiones
+
+		
 	}
 	public void sendtoDHT(Message m){
 		routeLayer.sendDHTLookup(m.dest, m);
