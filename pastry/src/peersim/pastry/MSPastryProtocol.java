@@ -700,7 +700,6 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         this.mspastryid = myPid;
 
         Message m = (Message) event;
-;
 
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
@@ -728,6 +727,9 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             break;
         //Caso para que no se muera el EDSimulator
         case Message.MSG_NOTHING:
+            break;
+        case Message.MSG_SEARCH:
+            System.out.println("lo buscaré papu");
             break;
         }
 

@@ -11,6 +11,7 @@ import peersim.config.Configuration;
 import peersim.edsim.EDSimulator;
 import javax.swing.JFileChooser;
 import java.math.*;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -162,7 +163,6 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
 
             Message m = Message.makeLookUp(nombreCancion);
             m.timestamp = CommonState.getTime();
-            m.body=nombreCancion;
             if (CommonState.r.nextInt(100) < 100){
                 m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
             }
@@ -177,6 +177,19 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
     }//GEN-LAST:event_buttonInsertarMouseClicked
 
     private void buttonBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBuscarMouseClicked
+            String nombreBuscar = textBuscar.getText();
+            Message m = Message.makeSearch(nombreBuscar);
+            m.timestamp = CommonState.getTime();
+            if (CommonState.r.nextInt(100) < 100){
+                m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
+            }
+            else{
+                m.dest = ((MSPastryProtocol) (Network.get(CommonState.r.nextInt(
+                         Network.size())).getProtocol(pid))).nodeId;
+            }
+            Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
+            System.out.println(m.body);
+            EDSimulator.add(0, m, consulta, 5);
     }//GEN-LAST:event_buttonBuscarMouseClicked
 
 

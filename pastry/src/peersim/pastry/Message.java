@@ -106,6 +106,7 @@ public class Message {
     public static final int MSG_QUERY = 6; 
 
     public static final int MSG_NOTHING = 7; 
+    public static final int MSG_SEARCH = 8; 
 
     /*
      * Identify the type of this message
@@ -215,6 +216,9 @@ public class Message {
     }
     public static final Message makeNothing(Object body){
       return new Message(MSG_NOTHING, body);
+    }
+    public static final Message makeSearch(Object body){
+      return new Message(MSG_SEARCH, body);
     }
     //______________________________________________________________________________________________
     /**

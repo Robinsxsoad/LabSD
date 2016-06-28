@@ -11,6 +11,7 @@ import java.io.*;
 import java.util.*;
 
 
+
 public class App implements Cloneable, EDProtocol {
 	private static final String PAR_TRANSPORT = "transport";
 
@@ -27,12 +28,13 @@ public class App implements Cloneable, EDProtocol {
 		this.dfsLayer = ((DFS) CommonState.getNode().getProtocol(tid));
 		this.dfsLayer.setMyApp(this);
 	}
-	public void receive(Object event){		//RECIBIMOS DEL DHT
+	public void receive(Object event){		//RECIBIMOS DEL DFS
+		Message m = (Message) event;
 		System.out.println("POP UP DE CANCIÓN RECIBIDA");
 	}
 
 	@Override 	
-	public void processEvent(Node myNode, int pid, Object event){  // LLEGA DESDE CONSULTA.java
+	public void processEvent(Node myNode, int pid, Object event){  // LLEGA DESDE Vista.java
 		Message m = (Message) event;
 		Node nodo=myNode;
 		System.out.println(((MSPastryProtocol) myNode.getProtocol(pid-2)).nodeId);
