@@ -137,14 +137,7 @@ public class VistaCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_textBuscarActionPerformed
 
     private void buttonInsertarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInsertarActionPerformed
-        // Desplegar selector de archivo
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        int result = fileChooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            textInsertar.setText(selectedFile.getAbsolutePath());
-        }
+        
     }//GEN-LAST:event_buttonInsertarActionPerformed
 
     private void buttonInsertarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonInsertarMouseClicked
