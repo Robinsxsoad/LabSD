@@ -157,17 +157,12 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
     }//GEN-LAST:event_buttonInsertarActionPerformed
 
     private void buttonInsertarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonInsertarMouseClicked
-        // Desplegar selector de archivo
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        int result = fileChooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            textInsertar.setText(selectedFile.getAbsolutePath());
+			
+            String nombreCancion = textInsertar.getText();
 
-            Message m = Message.makeLookUp(selectedFile.getAbsolutePath());
+            Message m = Message.makeLookUp(nombreCancion);
             m.timestamp = CommonState.getTime();
-            m.body=selectedFile.getAbsolutePath();
+            m.body=nombreCancion;
             if (CommonState.r.nextInt(100) < 100){
                 m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
             }
@@ -178,7 +173,7 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
             Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
             System.out.println(m.body);
             EDSimulator.add(0, m, consulta, 5);
-        }
+        
     }//GEN-LAST:event_buttonInsertarMouseClicked
 
     private void buttonBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBuscarMouseClicked
