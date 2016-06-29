@@ -72,7 +72,7 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
             }
         });
 
-        jLabel3.setText("Insertar una canción");
+        jLabel3.setText("Ingrese nombre de la canción");
 
         textInsertar.setEditable(true);
 

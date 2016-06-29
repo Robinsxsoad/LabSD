@@ -73,7 +73,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
     private int mspastryid;
     private boolean cleaningScheduled = false;
     //arraylist de partes de cancion
-    private ArrayList<String> parts = new ArrayList<String>();
+    private ArrayList<Bloque> bloquesGuardados = new ArrayList<Bloque>();
 
     /**
      * allow to call the cleaning service initializer only once
@@ -237,7 +237,8 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * @param m Message
      */
     public void receiveRoute(Message m, Node srcNode) {
-
+    // public void receiveRoute(Object msg, Node srcNode) {
+        // Message m = (Message)msg;
 
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
@@ -256,9 +257,13 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             break;
         //AGREGAR CASOS DE DFS
         case Message.MSG_QUERY:
-
-            parts.add((String)m.body);
+            // En m.body debería venir el objeto que debo guardar
+            Bloque bloque = new Bloque();
+            bloque = (Bloque)m.body;
+            // parts.add((String)m.body);
             o("\n[ Llega Fragmento ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
+            System.out.println("Debo guardar la canción " +bloque.getNombreCancion()+ " en alguna parte");
+            System.out.println("Tiene secuencia "+bloque.getSecuenciaBloque());
             break;
 
         }
@@ -271,7 +276,8 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * @param srcNode Node
      */
     private void route(Message m, Node srcNode) {
-
+    // private void route(Object msg, Node srcNode) {
+        // Message m = (Message)msg;
         // u("["+RoutingTable.truncateNodeId(nodeId)+"] received msg:[" + m.id + "] to route, with track: <");        o(m.traceToString(false) + ">");
         BigInteger nexthop = null;
 
@@ -703,6 +709,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
 
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
+            // System.out.println("Llegó mensaje lookup "+m.body.toString()); // Lleva el nombre de la canción
             route(m, myNode);
             break;
 
@@ -723,6 +730,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             break;
         //Bajo mensajes a capa DHT encargado y los ruteo
         case Message.MSG_QUERY:
+            // System.out.println("Llegó mensaje query ");
             route(m, myNode);
             break;
         //Caso para que no se muera el EDSimulator

@@ -49,7 +49,8 @@ public class DFS implements Cloneable, EDProtocol {
         listener = l;
     }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
-		Message m = (Message) event;
+		Message m = (Message) event; // m.body está el nombre de la canción al venir del DHT primera parte
+		// System.out.println("DFS receive "+m.body.toString());
 
 
 		switch (m.messageType) {
@@ -68,6 +69,7 @@ public class DFS implements Cloneable, EDProtocol {
 
 			for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion
 			Message q = Message.makeQuery(particiones.get(j)); // El mensaje a enviar es el objeto
+			q.body = particiones.get(j);
 			try{
 				q.dest = HashSHA.applyHash(particiones.get(j).getParticion()); // Hash con los datos para saber quién los tendrá
 				dests.add(q.dest); // Agrego a los destinatarios del mensaje
