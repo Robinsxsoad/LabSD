@@ -262,6 +262,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             bloque = (Bloque)m.body;
             o("\n[ Llega Fragmento ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
             System.out.println("Canción guardada");
+            
             break;
 
         }
