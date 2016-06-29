@@ -34,9 +34,8 @@ public class DFS implements Cloneable, EDProtocol {
 	private int tid;
 	//Array list de destinos de mi cancion
 	private ArrayList<BigInteger> dests = new ArrayList<BigInteger>();
-	// ArrayList para mantener las particiones con la info
-	private ArrayList<Bloque> particiones = new ArrayList<Bloque>();
-	private ArrayList<String> bloques = new ArrayList<String>();
+	private ArrayList<Catalogo> catalogo = new ArrayList<Catalogo>();
+	
 
 	public DFS(String prefix){
 		DFS.prefix = prefix;
@@ -50,30 +49,38 @@ public class DFS implements Cloneable, EDProtocol {
     }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event; // m.body está el nombre de la canción al venir del DHT primera parte
-		
+		ArrayList<String> bloques = new ArrayList<String>();
 		switch (m.messageType) {
         case Message.MSG_LOOKUP:
 			bloques=Chunkeador.cortarCancion((String)m.body);
 			for(int i=0;i<bloques.size();i++) {
-	 			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
-	 			bloqueActual.setNombreCancion(m.body.toString());
-	 			bloqueActual.setSecuenciaBloque(i+1);
-	 			bloqueActual.setParticion(bloques.get(i));
-	 			particiones.add(bloqueActual);
+	 			Catalogo entrada = new Catalogo();
+	 			entrada.setNombreCancion(m.body.toString());
+	 			try{
+	 				entrada.setEncargado(HashSHA.applyHash(bloques.get(i)));
+	 			}catch(UnsupportedEncodingException e){
+	 				e.printStackTrace();
+	 			}
+	 			catalogo.add(entrada);
+
+	 			Message q = Message.makeQuery(bloques.get(i)); // El mensaje a enviar es el trozo de canción
+				q.body = bloques.get(i);
+				try{
+					q.dest = HashSHA.applyHash(bloques.get(i)); // Hash con los datos para saber quién los tendrá
+					dests.add(q.dest); // Agrego a los destinatarios del mensaje
+				}catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+
+				this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
+
+			} // FIN FOR
+
+			for (int i=0; i<catalogo.size(); i++ ) {
+				System.out.println(catalogo.get(i).getNombreCancion());
+				System.out.println(catalogo.get(i).getEncargado());
 			}
 
-			for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion
-			Message q = Message.makeQuery(particiones.get(j)); // El mensaje a enviar es el objeto
-			q.body = particiones.get(j);
-			try{
-				q.dest = HashSHA.applyHash(particiones.get(j).getParticion()); // Hash con los datos para saber quién los tendrá
-				dests.add(q.dest); // Agrego a los destinatarios del mensaje
-			}catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
-			}
-			// Fin de for para enviar las particiones
             break;
 
         //Caso para buscar una canción almacenada

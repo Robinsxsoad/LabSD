@@ -258,11 +258,11 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         //AGREGAR CASOS DE DFS
         case Message.MSG_QUERY:
             // En m.body debería venir el objeto que debo guardar
-            Bloque bloque = new Bloque();
-            bloque = (Bloque)m.body;
+            // Bloque bloque = new Bloque();
+            // bloque = (Bloque)m.body;
             o("\n[ Llega Fragmento ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
             System.out.println("Canción guardada");
-            bloquesGuardados.add(bloque);
+            // bloquesGuardados.add(bloque);
             break;
 
         }
