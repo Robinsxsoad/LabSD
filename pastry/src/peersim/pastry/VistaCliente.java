@@ -11,7 +11,6 @@ import peersim.config.Configuration;
 import peersim.edsim.EDSimulator;
 import javax.swing.JFileChooser;
 import java.math.*;
-import javax.swing.JOptionPane;
 
 
 /**
