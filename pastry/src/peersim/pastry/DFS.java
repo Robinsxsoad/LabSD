@@ -50,6 +50,7 @@ public class DFS implements Cloneable, EDProtocol {
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event; // m.body está el nombre de la canción al venir del DHT primera parte
 		ArrayList<String> bloques = new ArrayList<String>();
+		ArrayList<Bloque> bloquesEnviar = new ArrayList<Bloque>();
 		switch (m.messageType) {
         case Message.MSG_LOOKUP:
 			bloques=Chunkeador.cortarCancion((String)m.body);
@@ -63,8 +64,14 @@ public class DFS implements Cloneable, EDProtocol {
 	 			}
 	 			catalogo.add(entrada);
 
-	 			Message q = Message.makeQuery(bloques.get(i)); // El mensaje a enviar es el trozo de canción
-				q.body = bloques.get(i);
+	 			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
+	 			bloqueActual.setNombreCancion(m.body.toString());
+	 			bloqueActual.setSecuenciaBloque(i+1);
+	 			bloqueActual.setParticion(bloques.get(i));
+	 			bloquesEnviar.add(bloqueActual);
+
+	 			Message q = Message.makeQuery(bloquesEnviar.get(i)); // El mensaje a enviar es el trozo de canción
+				q.body = bloquesEnviar.get(i);
 				try{
 					q.dest = HashSHA.applyHash(bloques.get(i)); // Hash con los datos para saber quién los tendrá
 					dests.add(q.dest); // Agrego a los destinatarios del mensaje
@@ -75,12 +82,6 @@ public class DFS implements Cloneable, EDProtocol {
 				this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
 
 			} // FIN FOR
-
-			for (int i=0; i<catalogo.size(); i++ ) {
-				System.out.println(catalogo.get(i).getNombreCancion());
-				System.out.println(catalogo.get(i).getEncargado());
-			}
-
             break;
 
         //Caso para buscar una canción almacenada
