@@ -50,7 +50,7 @@ public class DFS implements Cloneable, EDProtocol {
     }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event;
-<<<<<<< HEAD
+
 
 		switch (m.messageType) {
         case Message.MSG_LOOKUP:
@@ -88,7 +88,6 @@ public class DFS implements Cloneable, EDProtocol {
         }
 
 
-=======
 		// System.out.println("Soy DFS y nombre es "+m.body.toString());
 		// ArrayList<String> bloques = new ArrayList<String>();
 		// ArrayList<Bloque> particiones = new ArrayList<Bloque>();
@@ -123,7 +122,7 @@ public class DFS implements Cloneable, EDProtocol {
 			}
 			this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
 		}
->>>>>>> cf2799400e38e33eaebb4d369b781387b975371d
+
 	}
 	public void sendtoDHT(Message m){
 		routeLayer.sendDHTLookup(m.dest, m);
