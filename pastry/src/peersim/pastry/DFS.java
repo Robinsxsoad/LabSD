@@ -49,72 +49,22 @@ public class DFS implements Cloneable, EDProtocol {
         listener = l;
     }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
-		Message m = (Message) event;
-<<<<<<< HEAD
-
+		Message m = (Message) event; // m.body está el nombre de la canción al venir del DHT primera parte
+		
 		switch (m.messageType) {
         case Message.MSG_LOOKUP:
-        	System.out.println("Soy DHT y nombre es "+m.body.toString());
-			ArrayList<String> bloques = new ArrayList<String>();
-			ArrayList<Bloque> particiones = new ArrayList<Bloque>();
 			bloques=Chunkeador.cortarCancion((String)m.body);
-			Bloque bloqueActual = new Bloque(); // temporal
 			for(int i=0;i<bloques.size();i++) {
-	 			Message q = Message.makeQuery(bloques.get(i));
+	 			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
 	 			bloqueActual.setNombreCancion(m.body.toString());
 	 			bloqueActual.setSecuenciaBloque(i+1);
 	 			bloqueActual.setParticion(bloques.get(i));
 	 			particiones.add(bloqueActual);
-	 			// particiones.get(i).setNombreCancion(m.body.toString());
-	 			// particiones.get(i).setSecuenciaBloque(i);
-	 			// particiones.get(i).setParticion(bloques.get(i));
-				try{
-					q.dest = HashSHA.applyHash(bloques.get(i));
-					dests.add(q.dest);
-				}catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-				System.out.println(bloqueActual.getNombreCancion());
-				System.out.println(bloqueActual.getSecuenciaBloque());
-				// System.out.println(bloqueActual.getParticion());
-				this.sendtoDHT(q); //RUTEO A DHT
-			}// Fin de for para enviar las particiones
-            break;
+			}
 
-        //Caso para buscar una canción almacenada
-        case Message.MSG_SEARCH:
-        	//UNIR PIEZAS Y ENVIAR
-            break;
-        }
-
-
-=======
-		// System.out.println("Soy DFS y nombre es "+m.body.toString());
-		// ArrayList<String> bloques = new ArrayList<String>();
-		// ArrayList<Bloque> particiones = new ArrayList<Bloque>();
-		bloques=Chunkeador.cortarCancion((String)m.body);
-		// Bloque bloqueActual = new Bloque(); // temporal
-		for(int i=0;i<bloques.size();i++) {
-			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
- 			// Message q = Message.makeQuery(bloques.get(i));
- 			bloqueActual.setNombreCancion(m.body.toString());
- 			bloqueActual.setSecuenciaBloque(i+1);
- 			bloqueActual.setParticion(bloques.get(i));
- 			particiones.add(bloqueActual); // Agrego al listado el objeto particion actual
-			// try{
-			// 	q.dest = HashSHA.applyHash(bloques.get(i));
-			// 	dests.add(q.dest);
-			// }catch (UnsupportedEncodingException e) {
-			// 	e.printStackTrace();
-			// }
-			// System.out.println(bloqueActual.getNombreCancion());
-			// System.out.println(bloqueActual.getSecuenciaBloque());
-			// System.out.println(bloqueActual.getParticion());
-			// this.sendtoDHT(q); //RUTEO A DHT
-		}// Fin de for para enviar las particiones
-
-		for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion
+			for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion
 			Message q = Message.makeQuery(particiones.get(j)); // El mensaje a enviar es el objeto
+			q.body = particiones.get(j);
 			try{
 				q.dest = HashSHA.applyHash(particiones.get(j).getParticion()); // Hash con los datos para saber quién los tendrá
 				dests.add(q.dest); // Agrego a los destinatarios del mensaje
@@ -122,8 +72,16 @@ public class DFS implements Cloneable, EDProtocol {
 				e.printStackTrace();
 			}
 			this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
-		}
->>>>>>> cf2799400e38e33eaebb4d369b781387b975371d
+			}
+			// Fin de for para enviar las particiones
+            break;
+
+        //Caso para buscar una canción almacenada
+        case Message.MSG_SEARCH:
+        	//UNIR PIEZAS Y ENVIAR
+            break;
+        } // Fin de switch
+
 	}
 	public void sendtoDHT(Message m){
 		routeLayer.sendDHTLookup(m.dest, m);
