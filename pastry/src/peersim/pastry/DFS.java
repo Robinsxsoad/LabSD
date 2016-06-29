@@ -50,9 +50,7 @@ public class DFS implements Cloneable, EDProtocol {
     }
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event; // m.body está el nombre de la canción al venir del DHT primera parte
-		// System.out.println("DFS receive "+m.body.toString());
-
-
+		
 		switch (m.messageType) {
         case Message.MSG_LOOKUP:
 			bloques=Chunkeador.cortarCancion((String)m.body);
@@ -62,9 +60,6 @@ public class DFS implements Cloneable, EDProtocol {
 	 			bloqueActual.setSecuenciaBloque(i+1);
 	 			bloqueActual.setParticion(bloques.get(i));
 	 			particiones.add(bloqueActual);
-	 			// particiones.get(i).setNombreCancion(m.body.toString());
-	 			// particiones.get(i).setSecuenciaBloque(i);
-	 			// particiones.get(i).setParticion(bloques.get(i));
 			}
 
 			for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion

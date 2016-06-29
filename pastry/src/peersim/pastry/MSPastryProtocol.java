@@ -260,10 +260,8 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             // En m.body debería venir el objeto que debo guardar
             Bloque bloque = new Bloque();
             bloque = (Bloque)m.body;
-            // parts.add((String)m.body);
             o("\n[ Llega Fragmento ]\t[ Nodo = "+RoutingTable.truncateNodeId(nodeId) +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
-            System.out.println("Debo guardar la canción " +bloque.getNombreCancion()+ " en alguna parte");
-            System.out.println("Tiene secuencia "+bloque.getSecuenciaBloque());
+            System.out.println("Canción guardada");
             break;
 
         }
