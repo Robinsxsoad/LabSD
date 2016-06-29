@@ -48,6 +48,20 @@ public class DFS implements Cloneable, EDProtocol {
 	public void setMyApp(App l) {
         listener = l;
     }
+
+    private void deliver(Message m) {
+        //statistiche utili all'observer
+        MSPastryObserver.hopStore.add(m.nrHops-1);
+        long timeInterval = (CommonState.getTime())-(m.timestamp);
+        MSPastryObserver.timeStore.add(timeInterval);
+
+        if (listener != null) {//se envia archivo recuperado a la app
+           listener.receive(m);
+        }
+
+    }
+
+
 	public void receive(Object event){		//RECIBIMOS DEL DHT
 		Message m = (Message) event; // m.body está el nombre de la canción al venir del DHT primera parte
 		
