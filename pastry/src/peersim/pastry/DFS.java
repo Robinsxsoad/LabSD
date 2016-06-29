@@ -63,22 +63,22 @@ public class DFS implements Cloneable, EDProtocol {
 			}
 
 			for(int j=0;j<particiones.size();j++){ // Recorro todos los objetos particion
-			Message q = Message.makeQuery(particiones.get(j)); // El mensaje a enviar es el objeto
-			q.body = particiones.get(j);
-			try{
-				q.dest = HashSHA.applyHash(particiones.get(j).getParticion()); // Hash con los datos para saber quién los tendrá
-				dests.add(q.dest); // Agrego a los destinatarios del mensaje
-			}catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
-			this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
+				Message q = Message.makeQuery(particiones.get(j)); // El mensaje a enviar es el objeto
+				q.body = particiones.get(j);
+				try{
+					q.dest = HashSHA.applyHash(particiones.get(j).getParticion()); // Hash con los datos para saber quién los tendrá
+					dests.add(q.dest); // Agrego a los destinatarios del mensaje
+				}catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
 			}
 			// Fin de for para enviar las particiones
             break;
 
         //Caso para buscar una canción almacenada
         case Message.MSG_SEARCH:
-        	//UNIR PIEZAS Y ENVIAR
+        	
             break;
         } // Fin de switch
 
