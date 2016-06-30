@@ -106,8 +106,10 @@ public class Message {
     public static final int MSG_QUERY = 6; 
 
     public static final int MSG_NOTHING = 7; 
-    public static final int MSG_SEARCH = 8; 
-
+    public static final int MSG_SEARCH = 8;
+    public static final int MSG_REQUEST = 9; 
+    public static final int MSG_RESPUESTA = 10;
+    public static final int MSG_FINAL = 11;
     /*
      * Identify the type of this message
      */
@@ -219,6 +221,15 @@ public class Message {
     }
     public static final Message makeSearch(Object body){
       return new Message(MSG_SEARCH, body);
+    }
+    public static final Message makeRequest(Object body){
+      return new Message(MSG_REQUEST, body);
+    }
+    public static final Message makeRespuesta(Object body){
+      return new Message(MSG_RESPUESTA, body);
+    }
+    public static final Message makeFinal(Object body){
+      return new Message(MSG_FINAL, body);
     }
     //______________________________________________________________________________________________
     /**

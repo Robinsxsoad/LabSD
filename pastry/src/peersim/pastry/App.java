@@ -30,13 +30,14 @@ public class App implements Cloneable, EDProtocol {
 	}
 	public void receive(Object event){		//RECIBIMOS DEL DFS
 		Message m = (Message) event;
-		System.out.println("POP UP DE CANCIÓN RECIBIDA");
+		System.out.println("POP UP DE CANCIÓN RECIBIDA en nodo:"+dfsLayer.routeLayer.nodeId );
 	}
 
 	@Override 	
 	public void processEvent(Node myNode, int pid, Object event){  // LLEGA DESDE Vista.java
 		Message m = (Message) event;
 		Node nodo=myNode;
+		m.src=((MSPastryProtocol) myNode.getProtocol(pid-2)).nodeId;
 		System.out.println(((MSPastryProtocol) myNode.getProtocol(pid-2)).nodeId);
 		EDSimulator.add(0, m, nodo, tid);
 	}

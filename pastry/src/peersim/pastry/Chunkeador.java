@@ -58,21 +58,15 @@ public class Chunkeador{
         }
 
         // Asumo que la entrada llega ordenada
-        public static Object[] unirCancion(ArrayList<String> partes, int numPartes){
+        public static String unirCancion(ArrayList<String> partes){
             Object[] cancion;
             cancion = partes.toArray();
+            String cancionUnida= Arrays.toString(cancion);
             
-            
-            return cancion;
+            return cancionUnida;
         }
 
-        public static void main(String [] args) {
-            ArrayList<String> partes = cortarCancion("song.mp3");
-            
-            Object[] cancion;
-            cancion = unirCancion(partes, 103);
-            
-        }
+
     
 
 } // End of class

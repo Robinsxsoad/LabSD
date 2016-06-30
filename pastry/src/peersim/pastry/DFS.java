@@ -32,9 +32,11 @@ public class DFS implements Cloneable, EDProtocol {
 	private static String prefix;
 	private int pid;
 	private int tid;
+	private boolean enviadoFinal =false;
 	//Array list de destinos de mi cancion
-	private ArrayList<BigInteger> dests = new ArrayList<BigInteger>();
-	private ArrayList<Catalogo> catalogo = new ArrayList<Catalogo>();
+	private ArrayList<Catalogo> catalogos = new ArrayList<Catalogo>();
+	private ArrayList<Bloque> bloquesEntrantes = new ArrayList<Bloque>();
+	private BigInteger solicitud;
 	
 
 	public DFS(String prefix){
@@ -68,27 +70,24 @@ public class DFS implements Cloneable, EDProtocol {
 		switch (m.messageType) {
         case Message.MSG_LOOKUP:
 			bloques=Chunkeador.cortarCancion((String)m.body);
+			Catalogo entrada = new Catalogo();
+			entrada.setNombreCancion(m.body.toString());
 			for(int i=0;i<bloques.size();i++) {
-	 			Catalogo entrada = new Catalogo();
-	 			entrada.setNombreCancion(m.body.toString());
 	 			try{
-	 				entrada.setEncargado(HashSHA.applyHash(bloques.get(i)));
+	 				entrada.getEncargados().add(HashSHA.applyHash(bloques.get(i)));
 	 			}catch(UnsupportedEncodingException e){
 	 				e.printStackTrace();
 	 			}
-	 			catalogo.add(entrada);
+
 
 	 			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
 	 			bloqueActual.setNombreCancion(m.body.toString());
-	 			bloqueActual.setSecuenciaBloque(i+1);
+	 			bloqueActual.setSecuenciaBloque(i);
 	 			bloqueActual.setParticion(bloques.get(i));
-	 			bloquesEnviar.add(bloqueActual);
 
-	 			Message q = Message.makeQuery(bloquesEnviar.get(i)); // El mensaje a enviar es el trozo de canción
-				q.body = bloquesEnviar.get(i);
+	 			Message q = Message.makeQuery(bloqueActual); // El mensaje a enviar es el trozo de canción
 				try{
 					q.dest = HashSHA.applyHash(bloques.get(i)); // Hash con los datos para saber quién los tendrá
-					dests.add(q.dest); // Agrego a los destinatarios del mensaje
 				}catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
@@ -96,14 +95,64 @@ public class DFS implements Cloneable, EDProtocol {
 				this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
 
 			} // FIN FOR
+			catalogos.add(entrada);
             break;
 
         //Caso para buscar una canción almacenada
         case Message.MSG_SEARCH:
-        	
+        	solicitud=m.src;
+        	//saber id del que debe responderle
+        	for(int i=0;i<catalogos.size();i++) {
+        		if(catalogos.get(i).getNombreCancion().equals((String)m.body)){
+        			for(int j=0;j<catalogos.get(i).getEncargados().size();j++){
+        				Message request=Message.makeRequest((String)m.body);
+        				request.src=routeLayer.nodeId;
+        				request.dest= catalogos.get(i).getEncargados().get(j);
+        				System.out.println("Encargado "+j+": "+request.dest);
+        				this.sendtoDHT(request);
+        			}
+        		}
+        	}
+
             break;
+        case Message.MSG_RESPUESTA:
+        	if(!bloquesEntrantes.contains((Bloque)m.body)){
+        		bloquesEntrantes.add((Bloque)m.body);
+        	}
+        	ArrayList<String> partes = new ArrayList<String>();
+        	for(int i=0;i<catalogos.size();i++) {
+        		if(catalogos.get(i).getNombreCancion().equals(((Bloque)m.body).getNombreCancion())){
+        			if(bloquesEntrantes.size()==catalogos.get(i).getEncargados().size()){
+        				bloquesEntrantes=sort(bloquesEntrantes);
+        				for (int j=0;j<bloquesEntrantes.size() ;j++ ) {
+        					partes.add(bloquesEntrantes.get(j).getParticion());
+        				}
+        				String cancion =Chunkeador.unirCancion(partes);
+        				Message q =Message.makeFinal(cancion);
+        				q.dest=solicitud;
+        				this.sendtoDHT(q);
+        				bloquesEntrantes.clear();
+        			}
+        		}
+        	}
+        	break;
+        case Message.MSG_FINAL:
+        	deliver(m);
         } // Fin de switch
 
+	}
+	private ArrayList<Bloque> sort(ArrayList<Bloque> blocks){
+		ArrayList<Bloque> sorted=blocks;
+		for (int i=1; i<bloquesEntrantes.size(); i++){
+		 	for(int j=0 ; j<bloquesEntrantes.size() - 1; j++){
+			 	if (bloquesEntrantes.get(j).getSecuenciaBloque() > bloquesEntrantes.get(j+1).getSecuenciaBloque()){
+				 	Bloque temp = bloquesEntrantes.get(j);
+				 	bloquesEntrantes.set(j, bloquesEntrantes.get(j+1));
+				 	bloquesEntrantes.set(j+1,temp);
+				}
+		 	}
+		}
+		return sorted;
 	}
 	public void sendtoDHT(Message m){
 		routeLayer.sendDHTLookup(m.dest, m);
@@ -114,11 +163,11 @@ public class DFS implements Cloneable, EDProtocol {
 		String hash = m.body.toString();
 		System.out.println("en DFS"+((MSPastryProtocol) myNode.getProtocol(pid-1)).nodeId);
 		try{
-			m.dest = HashSHA.applyHash(hash);
-		}catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		this.sendtoDHT(m); //RUTEO A DHT
+				m.dest = HashSHA.applyHash(hash);
+			}catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+			this.sendtoDHT(m); //RUTEO A DHT
 	}
 
 	public Object clone() {

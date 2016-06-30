@@ -14,15 +14,15 @@ import java.util.*;
 public class Catalogo{
 
 	private String nombreCancion;
-	private BigInteger encargado;
+	private ArrayList<BigInteger> encargados =new ArrayList<BigInteger>();;
 
 	public void Bloque(){
 		nombreCancion="";
 	}
 
-	public void Bloque(String nombreCancion, BigInteger encargado){
+	public void Bloque(String nombreCancion, ArrayList<BigInteger> encargado){
 		this.nombreCancion=nombreCancion;
-		this.encargado=encargado;
+		this.encargados=encargado;
 	}
 
 	public String getNombreCancion(){
@@ -33,12 +33,8 @@ public class Catalogo{
     	this.nombreCancion = nombreCancion;
 	}
 
-	public BigInteger getEncargado(){
-		return encargado;
-	}
-
-	public void setEncargado(BigInteger encargado){
-    	this.encargado = encargado;
+	public ArrayList<BigInteger> getEncargados(){
+		return encargados;
 	}
 
 

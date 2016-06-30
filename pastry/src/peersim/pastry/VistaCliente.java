@@ -187,7 +187,6 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
                          Network.size())).getProtocol(pid))).nodeId;
             }
             Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
-            System.out.println(m.body);
             EDSimulator.add(0, m, consulta, 5);
     }//GEN-LAST:event_buttonBuscarMouseClicked
 
