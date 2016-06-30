@@ -31,6 +31,7 @@ public class App implements Cloneable, EDProtocol {
 	public void receive(Object event){		//RECIBIMOS DEL DFS
 		Message m = (Message) event;
 		System.out.println("POP UP DE CANCIÓN RECIBIDA en nodo:"+dfsLayer.routeLayer.nodeId );
+		System.out.println("Reproduzco canción");
 	}
 
 	@Override 	
