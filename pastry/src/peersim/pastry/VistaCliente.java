@@ -160,7 +160,7 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
 			
             String nombreCancion = textInsertar.getText();
 
-            Message m = Message.makeLookUp(nombreCancion);
+            Message m = Message.makeLookUp(nombreCancion); //nombre cancion a insertar
             m.timestamp = CommonState.getTime();
             if (CommonState.r.nextInt(100) < 100){
                 m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
@@ -171,13 +171,13 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
             }
             Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
             System.out.println(m.body);
-            EDSimulator.add(0, m, consulta, 5);
+            EDSimulator.add(0, m, consulta, 5);//evento a capa APP
         
     }//GEN-LAST:event_buttonInsertarMouseClicked
 
     private void buttonBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonBuscarMouseClicked
             String nombreBuscar = textBuscar.getText();
-            Message m = Message.makeSearch(nombreBuscar);
+            Message m = Message.makeSearch(nombreBuscar);//mensaje de busqueda
             m.timestamp = CommonState.getTime();
             if (CommonState.r.nextInt(100) < 100){
                 m.dest = new BigInteger(MSPastryCommonConfig.BITS, CommonState.r);
@@ -185,9 +185,9 @@ public class VistaCliente extends javax.swing.JFrame implements Control{
             else{
                 m.dest = ((MSPastryProtocol) (Network.get(CommonState.r.nextInt(
                          Network.size())).getProtocol(pid))).nodeId;
-            }
+            }// se busca encargado random para responder la consulta
             Node consulta = Network.get(CommonState.r.nextInt(Network.size()));
-            EDSimulator.add(0, m, consulta, 5);
+            EDSimulator.add(0, m, consulta, 5);//evento a capa APP
     }//GEN-LAST:event_buttonBuscarMouseClicked
 
 

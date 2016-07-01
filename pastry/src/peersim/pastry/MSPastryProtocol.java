@@ -175,7 +175,6 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * update
      * @param m Message
      */
-    //MODIFICAR PARA ENVIO
     private void deliver(Message m) {
         //statistiche utili all'observer
         MSPastryObserver.hopStore.add(m.nrHops-1);
@@ -183,6 +182,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         MSPastryObserver.timeStore.add(timeInterval);
 
         if (listener != null) {
+           System.out.println("Envio desde Pastry a la capa DFS nodo: "+this.nodeId);
            listener.receive(m);
         }
 
@@ -241,7 +241,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
         // Message m = (Message)msg;
 
         switch (m.messageType) {
-        case Message.MSG_LOOKUP:
+        case Message.MSG_LOOKUP://se recibe el nombre
             deliver(m);
             o("\n[ Recibi la canción ]\t[ Nodo = "+nodeId +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
             break;
@@ -255,31 +255,28 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             transport = (UnreliableTransport) (Network.prototype).getProtocol(tid);
             transport.send(nodeIdtoNode(this.nodeId), nodeIdtoNode(m.dest), m, mspastryid);
             break;
-        //AGREGAR CASOS DE DFS
         case Message.MSG_QUERY:
-            // En m.body debería venir el objeto que debo guardar
+            // se guardan los fragmentos
             Bloque bloque = new Bloque();
             bloque = (Bloque)m.body;
             o("\n[ Llega Fragmento ]\t[ Nodo = "+nodeId +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
             bloquesGuardados.add(bloque);
             break;
-        case Message.MSG_SEARCH:
-            System.out.println("pase a DFS");
+        case Message.MSG_SEARCH://se envia fragmento recibido a la capa DFS
             deliver(m);
             break;    
         case Message.MSG_REQUEST:
-   
-            o("\n[ Respuesta ]\t[ Nodo = "+nodeId +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos]");
+            //se solicitan todos los fragmentos
+            o("\n[ Respuesta ]\t[ Nodo = "+nodeId +" | Id mensaje = "+m.id+" | Cuerpo =  | "+m.nrHops+" saltos] | Cantidad de Fragmentos = "+bloquesGuardados.size());
             for (int i=0;i<bloquesGuardados.size() ; i++) {
                 if(bloquesGuardados.get(i).getNombreCancion().equals((String)m.body)){
                     Message respuesta=Message.makeRespuesta(bloquesGuardados.get(i));
                     respuesta.dest=m.src;
                     route(respuesta,nodeIdtoNode(this.nodeId));
-                    System.out.println(bloquesGuardados.get(i));
                 }
             }
             break;
-        case Message.MSG_FINAL:
+        case Message.MSG_FINAL://se sube cancion recuperada a DFS
             deliver(m);
             break;
         }
@@ -525,7 +522,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
      * @param recipient BigInteger
      * @param data Object
      */
-    //USAR PARA ENVIAR A OTROS NODOS
+    //Envio eventos a mi mismo hasta el destino
     public void send(BigInteger recipient, Object data) {
     	Message m = (Message)data;
     	m.dest = recipient;
@@ -725,6 +722,7 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
 
         switch (m.messageType) {
         case Message.MSG_LOOKUP:
+            System.out.println("Buscando encargado de la canción");  
             route(m, myNode);
             break;
 
@@ -756,12 +754,15 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
             route(m,myNode);
             break;
         case Message.MSG_REQUEST:
+            System.out.println("Solicitando a nodo encargado la canción"); 
             route(m,myNode);
             break;
         case Message.MSG_RESPUESTA:
+            System.out.println("Recibo fragmento");  
             deliver(m);
             break;
         case Message.MSG_FINAL:
+            System.out.println("Devuelvo la canción a quien la solicitó");  
             route(m,myNode);
             break;            
         }

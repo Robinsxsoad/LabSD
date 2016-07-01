@@ -20,6 +20,7 @@ public class App implements Cloneable, EDProtocol {
 	private int pid;
 	private int tid;
 	BigInteger consulta;
+	private ArrayList<String> canciones=new ArrayList<String>();
 
 	public App(String prefix){
 		App.prefix = prefix;
@@ -30,16 +31,30 @@ public class App implements Cloneable, EDProtocol {
 	}
 	public void receive(Object event){		//RECIBIMOS DEL DFS
 		Message m = (Message) event;
-		System.out.println("POP UP DE CANCIÓN RECIBIDA en nodo:"+dfsLayer.routeLayer.nodeId );
+		String cancion = m.body.toString();
+		if(canciones.contains(cancion)==false){
+			canciones.add(cancion);
+			System.out.println(canciones.size());
+			System.out.println("Guardo canción");
+			try{//recibe la canción y la guarda como archivo
+			FileOutputStream fileOuputStream = new FileOutputStream("reproducida.mp3");
+			byte[] b = cancion.getBytes();
+			fileOuputStream.write(b);
+			fileOuputStream.close();
+			}catch(Exception e){
+			System.out.println("Problema al reproducir");
+			}
+		}
 	}
 
 	@Override 	
 	public void processEvent(Node myNode, int pid, Object event){  // LLEGA DESDE Vista.java
 		Message m = (Message) event;
 		Node nodo=myNode;
+		//Recive mensaje desde la interfaz gráfica e indica el nodo fuente
 		m.src=((MSPastryProtocol) myNode.getProtocol(pid-2)).nodeId;
-		System.out.println(((MSPastryProtocol) myNode.getProtocol(pid-2)).nodeId);
-		EDSimulator.add(0, m, nodo, tid);
+		System.out.println("Consulta capa App en Nodo: "+dfsLayer.routeLayer.nodeId);
+		EDSimulator.add(0, m, nodo, tid);//lo envia al DFS del nodo
 	}
 
 	public Object clone() {

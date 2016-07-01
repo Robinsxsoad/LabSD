@@ -68,7 +68,7 @@ public class DFS implements Cloneable, EDProtocol {
 		ArrayList<String> bloques = new ArrayList<String>();
 		ArrayList<Bloque> bloquesEnviar = new ArrayList<Bloque>();
 		switch (m.messageType) {
-        case Message.MSG_LOOKUP:
+        case Message.MSG_LOOKUP://se corta la cancion y se envia a los nodos encargados
 			bloques=Chunkeador.cortarCancion((String)m.body);
 			Catalogo entrada = new Catalogo();
 			entrada.setNombreCancion(m.body.toString());
@@ -102,7 +102,7 @@ public class DFS implements Cloneable, EDProtocol {
         case Message.MSG_SEARCH:
         	solicitud=m.src;
         	//saber id del que debe responderle
-        	for(int i=0;i<catalogos.size();i++) {
+        	for(int i=0;i<catalogos.size();i++) {//se solicitan fragmentos a los nodos
         		if(catalogos.get(i).getNombreCancion().equals((String)m.body)){
         			for(int j=0;j<catalogos.get(i).getEncargados().size();j++){
         				Message request=Message.makeRequest((String)m.body);
@@ -115,14 +115,14 @@ public class DFS implements Cloneable, EDProtocol {
         	}
 
             break;
-        case Message.MSG_RESPUESTA:
-        	if(!bloquesEntrantes.contains((Bloque)m.body)){
+        case Message.MSG_RESPUESTA://se procesa la respuesta de los nodos cuando llegan todos los fragmentos
+        	if(!bloquesEntrantes.contains((Bloque)m.body)){//evitar duplicados
         		bloquesEntrantes.add((Bloque)m.body);
         	}
         	ArrayList<String> partes = new ArrayList<String>();
         	for(int i=0;i<catalogos.size();i++) {
-        		if(catalogos.get(i).getNombreCancion().equals(((Bloque)m.body).getNombreCancion())){
-        			if(bloquesEntrantes.size()==catalogos.get(i).getEncargados().size()){
+        		if(catalogos.get(i).getNombreCancion().equals(((Bloque)m.body).getNombreCancion())){//busco nombre
+        			if(bloquesEntrantes.size()==catalogos.get(i).getEncargados().size()){//verifico el toral
         				bloquesEntrantes=sort(bloquesEntrantes);
         				for (int j=0;j<bloquesEntrantes.size() ;j++ ) {
         					partes.add(bloquesEntrantes.get(j).getParticion());
@@ -131,17 +131,17 @@ public class DFS implements Cloneable, EDProtocol {
         				Message q =Message.makeFinal(cancion);
         				q.dest=solicitud;
         				this.sendtoDHT(q);
-        				bloquesEntrantes.clear();
+        				bloquesEntrantes.clear();//se limpian los bloques entrantes
         			}
         		}
         	}
         	break;
-        case Message.MSG_FINAL:
+        case Message.MSG_FINAL://se envia respuesta a capa App con cancion recuperada
         	deliver(m);
         } // Fin de switch
 
 	}
-	private ArrayList<Bloque> sort(ArrayList<Bloque> blocks){
+	private ArrayList<Bloque> sort(ArrayList<Bloque> blocks){//ordenamiento de los bloques por secuencia
 		ArrayList<Bloque> sorted=blocks;
 		for (int i=1; i<bloquesEntrantes.size(); i++){
 		 	for(int j=0 ; j<bloquesEntrantes.size() - 1; j++){
@@ -155,15 +155,16 @@ public class DFS implements Cloneable, EDProtocol {
 		return sorted;
 	}
 	public void sendtoDHT(Message m){
+		System.out.println("Mensaje enviado a Pastry nodo :"+routeLayer.nodeId);
 		routeLayer.sendDHTLookup(m.dest, m);
 	}
 	@Override 	
-	public void processEvent(Node myNode, int pid, Object event){
+	public void processEvent(Node myNode, int pid, Object event){//procesa eventos que llegan desde la capa de App
 		Message m = (Message) event;
 		String hash = m.body.toString();
-		System.out.println("en DFS"+((MSPastryProtocol) myNode.getProtocol(pid-1)).nodeId);
+		System.out.println("Mensaje recibido en DFS del Nodo: "+((MSPastryProtocol) myNode.getProtocol(pid-1)).nodeId);
 		try{
-				m.dest = HashSHA.applyHash(hash);
+				m.dest = HashSHA.applyHash(hash);//busca destino
 			}catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}

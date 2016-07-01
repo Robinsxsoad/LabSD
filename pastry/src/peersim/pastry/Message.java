@@ -104,7 +104,7 @@ public class Message {
     public static final int MSG_SERVICEPOLL   = 5;
 
     public static final int MSG_QUERY = 6; 
-
+    //tipos de mensajes agregad para funcionamiento de la aplicacion
     public static final int MSG_NOTHING = 7; 
     public static final int MSG_SEARCH = 8;
     public static final int MSG_REQUEST = 9; 
