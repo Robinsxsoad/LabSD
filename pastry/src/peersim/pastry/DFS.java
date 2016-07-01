@@ -79,28 +79,33 @@ public class DFS implements Cloneable, EDProtocol {
 	 				e.printStackTrace();
 	 			}
 
-
-	 			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
-	 			bloqueActual.setNombreCancion(m.body.toString());
-	 			bloqueActual.setSecuenciaBloque(i);
-	 			bloqueActual.setParticion(bloques.get(i));
-
-	 			Message q = Message.makeQuery(bloqueActual); // El mensaje a enviar es el trozo de canción
-				try{
-					q.dest = HashSHA.applyHash(bloques.get(i)); // Hash con los datos para saber quién los tendrá
-				}catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-
-				this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
-
 			} // FIN FOR
-			catalogos.add(entrada);
+			if(!repetida((String)m.body,catalogos)){
+				catalogos.add(entrada);
+				for (int i=0;i<bloques.size();i++) {				
+		 			Bloque bloqueActual = new Bloque(); // temporal para guardar los datos
+		 			bloqueActual.setNombreCancion(m.body.toString());
+		 			bloqueActual.setSecuenciaBloque(i);
+		 			bloqueActual.setParticion(bloques.get(i));
+
+		 			Message q = Message.makeQuery(bloqueActual); // El mensaje a enviar es el trozo de canción
+					try{
+						q.dest = HashSHA.applyHash(bloques.get(i)); // Hash con los datos para saber quién los tendrá
+					}catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+
+					this.sendtoDHT(q); // Enviar todos los objetos partición a DHT
+				}
+			}else{
+				System.out.println("Esta canción ya ha sido ingresada");
+			}
             break;
 
         //Caso para buscar una canción almacenada
         case Message.MSG_SEARCH:
         	solicitud=m.src;
+        	System.out.println("voy a buscar pero" +catalogos.size());
         	//saber id del que debe responderle
         	for(int i=0;i<catalogos.size();i++) {//se solicitan fragmentos a los nodos
         		if(catalogos.get(i).getNombreCancion().equals((String)m.body)){
@@ -112,6 +117,7 @@ public class DFS implements Cloneable, EDProtocol {
         				this.sendtoDHT(request);
         			}
         		}
+
         	}
 
             break;
@@ -153,6 +159,16 @@ public class DFS implements Cloneable, EDProtocol {
 		 	}
 		}
 		return sorted;
+	}
+	private boolean repetida(String nombre,ArrayList<Catalogo> catalogos){
+		String name =nombre;
+		ArrayList<Catalogo> blocks = catalogos;
+		for (int i=0;i<blocks.size() ;i++ ) {
+			if(name.equals(blocks.get(i).getNombreCancion())){
+				return true;
+			}
+		}
+		return false;
 	}
 	public void sendtoDHT(Message m){
 		System.out.println("Mensaje enviado a Pastry nodo :"+routeLayer.nodeId);
