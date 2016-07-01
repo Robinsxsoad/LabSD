@@ -44,12 +44,12 @@ public class Chunkeador{
         }
         catch(FileNotFoundException ex) {
             System.out.println(
-                "Unable to open file '" + 
+                "No se encuentra el archivo para la canción '" + 
                 fileName + "'");                
         }
         catch(IOException ex) {
             System.out.println(
-                "Error reading file '" 
+                "Error en la lectura del archivo '" 
                 + fileName + "'");                  
             // Or we could just do this: 
             // ex.printStackTrace();
