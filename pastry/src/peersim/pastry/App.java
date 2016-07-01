@@ -31,6 +31,7 @@ public class App implements Cloneable, EDProtocol {
 	}
 	public void receive(Object event){		//RECIBIMOS DEL DFS
 		Message m = (Message) event;
+<<<<<<< HEAD
 		String cancion = m.body.toString();
 		if(canciones.contains(cancion)==false){
 			canciones.add(cancion);
@@ -45,6 +46,10 @@ public class App implements Cloneable, EDProtocol {
 			System.out.println("Problema al reproducir");
 			}
 		}
+=======
+		System.out.println("POP UP DE CANCIÓN RECIBIDA en nodo:"+dfsLayer.routeLayer.nodeId );
+		System.out.println("Reproduzco canción");
+>>>>>>> 16ef584b431e62ac081311e1e692665f40c984e8
 	}
 
 	@Override 	
