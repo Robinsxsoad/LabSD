@@ -242,8 +242,8 @@ public class MSPastryProtocol implements Cloneable, EDProtocol {
 
         switch (m.messageType) {
         case Message.MSG_LOOKUP://se recibe el nombre
-            deliver(m);
             o("\n[ Recibi la canción ]\t[ Nodo = "+nodeId +" | Id mensaje = "+m.id+" | Cuerpo = "+m.body+" | "+m.nrHops+" saltos]");
+            deliver(m);
             break;
         case Message.MSG_JOINREQUEST:
 
