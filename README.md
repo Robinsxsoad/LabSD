@@ -12,7 +12,7 @@ java -cp peersim-1.0.5.jar:djep-1.0.0.jar:jep-2.3.0.jar:classes/ peersim.Simulat
 Estos comandos deben ser ejecutados en la carpeta "chord".
 
 #### Integrantes
-* Bryan Guzmán
+* Bryan Guzmán Álvarez
 * Robinson Oyarzún
 
 #### Profesor
